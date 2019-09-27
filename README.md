@@ -1,2 +1,2 @@
 # CSE112-Project1
-Assembler
+Assembler - assembles given text file into object code and reports errors if any encountered
