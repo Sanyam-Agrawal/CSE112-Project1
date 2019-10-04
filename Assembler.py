@@ -122,6 +122,7 @@ def first_pass (data_lines) :
 							print ("Syntax Error\nVariable not defined in line " + str (line_counter))
 			
 			else :
+				flag = False
 				ebprint ("Syntax Error\nUnknown Opcode in line " + str (line_counter))
 		
 		else :
@@ -131,7 +132,7 @@ def first_pass (data_lines) :
 		
 		line_counter += 1
 
-	return flag	
+	return flag
 
 
 
@@ -161,13 +162,13 @@ if __name__ == '__main__' :
 		ebprint ("ERROR")
 
 		print (
-		       "File with the given name doesn't exist.\n \
+		       "File with the given name doesn't exist.\n\
 		       Possible Reasons: \n \
 		       1. Wrong name entered. \n \
 		       2. File extension not entered. \n \
 		       3. File is in a different directory than the present working directory. \n \
 		       4. The file given has strict file permissions, so we are restricted from reading it."
-		      )
+		)
 
 		eprint ("Exiting")
 
