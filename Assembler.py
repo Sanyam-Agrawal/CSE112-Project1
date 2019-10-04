@@ -162,12 +162,12 @@ if __name__ == '__main__' :
 		ebprint ("ERROR")
 
 		print (
-		       "File with the given name doesn't exist.\n\
-		       Possible Reasons: \n \
-		       1. Wrong name entered. \n \
-		       2. File extension not entered. \n \
-		       3. File is in a different directory than the present working directory. \n \
-		       4. The file given has strict file permissions, so we are restricted from reading it."
+			"File with the given name doesn't exist. \n "
+			"Possible Reasons: \n "
+			"1. Wrong name entered. \n "
+			"2. File extension not entered. \n "
+			"3. File is in a different directory than the present working directory. \n "
+			"4. The file given has strict file permissions, so we are restricted from reading it. "
 		)
 
 		eprint ("Exiting")
