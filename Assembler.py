@@ -21,6 +21,7 @@ opcode_translations = {
                       }
 
 symbol_table = {}
+labels_accessed={}
 
 
 def first_pass (data_lines) :
@@ -55,7 +56,7 @@ def first_pass (data_lines) :
 				
 				else :
 				
-					symbol_table[line[0]] = ["label", line_counter]
+					symbol_table[line[0][:-1]] = ["label", line_counter]
 					line = line[1:]
 
 			if line[0] in opcode_translations :
@@ -106,6 +107,12 @@ def first_pass (data_lines) :
 						flag = False
 						print ("Syntax Error\nLabel can't be a numeric " + str (line_counter))
 
+					else :
+						if line[1] in labels_accessed :
+							labels_accessed[line[1]].append(line_counter)
+						else :
+							labels_accessed[line[1]] = [line_counter]
+
 				else:
 
 					if len(line) > 2 :
@@ -131,6 +138,24 @@ def first_pass (data_lines) :
 			ebprint ("Syntax Error\nEmpty line")
 		
 		line_counter += 1
+
+
+	# check for all labels accessed are defined or not
+
+	for i in labels_accessed :
+
+		if i not in symbol_table :
+
+			line_numbers=""
+
+			for j in labels_accessed[i] :
+
+				line_numbers+=str(j)+" "
+
+			error_line="Label "+i+" is accessed but not in defined in the line(s):- "+line_numbers
+
+			ebprint (error_line)
+
 
 	return flag
 
@@ -198,7 +223,7 @@ if __name__ == '__main__' :
 	
 	if flag == True :
 
-		second_pass (data_lines)
+		# second_pass (data_lines)
 
 		cprint ("Program succesfully assembled. :)", 'green', attrs=['bold'])
 
