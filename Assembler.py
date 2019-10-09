@@ -141,7 +141,6 @@ def first_pass (data_lines) :
 
 
 	# check for all labels accessed are defined or not
-
 	for i in labels_accessed :
 
 		if i not in symbol_table :
@@ -150,7 +149,7 @@ def first_pass (data_lines) :
 
 			for j in labels_accessed[i] :
 
-				line_numbers+=str(j)+" "
+				line_numbers += str(j)+" "
 
 			error_line="Label "+i+" is accessed but not in defined in the line(s):- "+line_numbers
 
