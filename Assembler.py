@@ -46,13 +46,13 @@ def first_pass (data_lines) :
 						"Variable already defined with same name as a label.")
 				
 				else :
-					rprint("Syntax Error in line " + str (line_counter) + " ---> " + "Label already defined )
+					rprint("Syntax Error in line " + str (line_counter) + " ---> " + "Label already defined")
 			
 			else :
 
 				if line[0][:-1] in opcode_translations :
 					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Label's name"
-						+ "cannot be same as opcode ")
+						+ "cannot be same as opcode")
 				
 				else :		
 					symbol_table[line[0][:-1]] = ["label", line_counter]
@@ -101,7 +101,7 @@ def first_pass (data_lines) :
 						flag = False
 
 						rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
-							"Label already defined as variable ")
+							"Label already defined as variable")
 
 					elif line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
@@ -127,7 +127,7 @@ def first_pass (data_lines) :
 						flag = False
 
 						rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
-							"Label already defined with the same name ")
+							"Label already defined with the same name")
 
 		else :
 
