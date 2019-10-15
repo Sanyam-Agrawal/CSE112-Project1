@@ -1,5 +1,5 @@
 import sys
-from termcolor import colored, cprint 
+from termcolor import cprint 
 
 # Hack for Windows CLI
 if __import__('os').name == "nt" : __import__('os').system('color')
@@ -21,7 +21,7 @@ opcode_translations = {
                       }
 
 symbol_table = {}
-labels_accessed={}
+
 
 
 def first_pass (data_lines) :
@@ -29,6 +29,8 @@ def first_pass (data_lines) :
 	flag = True
 
 	line_counter = 1
+
+	labels_accessed = {}
 
 	for i in data_lines :
 
@@ -41,87 +43,72 @@ def first_pass (data_lines) :
 				flag = False
 				
 				if symbol_table[line[0]][1] == "variable" :
-					print ("Syntax Error\nVariable already defined with same name as a label.")
+					eprint ("Syntax Error" + " ---> " + "Variable already defined with same name as a label.")
 				
 				else :
-					print("Syntax Error\nLabel is already defined in line " + str (line_counter))
+					eprint("Syntax Error" + " ---> " + "Label is already defined in line " + str (line_counter))
 			
 			else :
 			
 				symbol_table[line[0][:-1]] = ["label", line_counter]
 				line = line[1:]
 
-		if line[0] in opcode_translations :
+		if len(line) == 0 :
+
+			flag = False
+
+			eprint ("Syntax Error" + " ---> " + "Empty line after label in line " + str (line_counter))
+				
+		elif line[0] in opcode_translations :
 
 			if line[0] == "CLA" :
 
 				if len(line) > 1 :
 					flag = False
-					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 
 			elif line[0] == "STP" :
 
 				if len(line) > 1 :
 					flag = False
-					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 				
 				elif len(data_lines) != line_counter :
-					print ("Warning, STP found before end of Program in line " + str (line_counter))
-			
-			elif line[0] == "INP" :
+					eprint ("Warning, STP found before end of Program in line " + str (line_counter))
 
-				if len(line) > 2 :
-					flag = False
-					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+				break
 
-				elif len(line) == 1 : 
-					flag = False
-					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
-
-				else :
-					if line[1] not in symbol_table:
-						symbol_table[line[1]] = ["variable",line_counter]
-					elif symbol_table[line[1]][0] == "label" :
-							flag = False
-							print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
-
-			elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
+			else :
 
 				if len(line) > 2:
 					flag = False
-					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 
-				elif len(line) == 1 : 
+				elif len(line) == 1 :
 					flag = False
-					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
+					ebprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
 
-				else :
+				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
+					#TODO : What if it was a variable?
 					if line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
 					else :
 						labels_accessed[line[1]] = [line_counter]
 
-			else:
-
-				if len(line) > 2 :
-					flag = False
-					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
-
-				elif len(line) == 1 :
-					flag = False
-					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
-
 				else :
-						if line[1] not in symbol_table:
-							symbol_table[line[1]] = ["variable",line_counter]
-						elif symbol_table[line[1]][0] == "label" :
-								flag = False
-								print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
 
-		
+					if line[1] not in symbol_table:
+						symbol_table[line[1]] = ["variable", line_counter]
+
+					elif symbol_table[line[1]][0] == "label" :
+							flag = False
+							ebprint ("Syntax Error" + " ---> " + "Label already defined with the same name " + str (line_counter))
+
 		else :
+
 			flag = False
-			ebprint ("Syntax Error\nUnknown Opcode in line " + str (line_counter))
+
+			ebprint ("Syntax Error" + " ---> " + "Unknown Opcode in line " + str (line_counter))
 	
 		line_counter += 1
 
