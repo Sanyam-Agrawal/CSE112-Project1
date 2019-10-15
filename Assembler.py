@@ -60,7 +60,7 @@ def first_pass (data_lines) :
 					flag = False
 
 					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Label's name"
-						+ "cannot be same as opcode")
+						+ " cannot be same as opcode")
 				
 				else :		
 					symbol_table[line[0]] = ["label", line_counter]
@@ -289,10 +289,13 @@ if __name__ == '__main__' :
 
 		# Print the symbol table
 		print ("\033[93mSymbol Table\033[00m")
-		print ("Symbol\tType\tAddress\tSize")
+		print ("Symbol\t Type\tAddress\tSize")
 		for i in symbol_table:
-			print (i, "\t", symbol_table[i][0], "\t", symbol_table[i][1])
-			if i[0] == 'variable' : print (" \tword")
+			print (i, "\t", " "*(8-len(symbol_table[i][0])),symbol_table[i][0], "\t", symbol_table[i][1],end=" ")
+			if symbol_table[i][0] == 'variable' : print (" \tword")
+			else: print()
+
+		print("\n\n")
 
 		# Print the object code
 		print ("\033[95mObject Code\033[00m")
