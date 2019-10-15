@@ -189,7 +189,7 @@ def second_pass (data_lines) :
 
 	for i in data_lines :
 
-		line = i
+		line = i[:]
 
 		#Get rid of label
 		if line[0][-1] == ":" : line = line[1:]
