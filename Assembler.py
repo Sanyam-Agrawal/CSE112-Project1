@@ -33,9 +33,11 @@ def first_pass (data_lines) :
 
 	for i in data_lines :
 
-		line = i
+		line = i[:]
 
 		if line[0][-1] == ':' :
+
+			line[0] = line[0][:-1]
 
 			if line[0] in symbol_table :
 
@@ -47,10 +49,12 @@ def first_pass (data_lines) :
 				
 				else :
 					rprint("Syntax Error in line " + str (line_counter) + " ---> " + "Label already defined")
+
+				line = line[1:]
 			
 			else :
 
-				if line[0][:-1] in opcode_translations :
+				if line[0] in opcode_translations :
 
 					flag = False
 
