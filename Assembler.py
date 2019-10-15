@@ -55,6 +55,7 @@ def first_pass (data_lines) :
 			
 			else :
 
+				
 				if line[0] in opcode_translations :
 
 					flag = False
@@ -63,7 +64,13 @@ def first_pass (data_lines) :
 						+ " cannot be same as opcode")
 				
 				else :		
-					symbol_table[line[0]] = ["label", line_counter]
+					if len(line[0]) == 0:
+
+						flag = False
+
+						rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Label's name cannot be blank")
+					else:
+						symbol_table[line[0]] = ["label", line_counter]
 				
 				line = line[1:]
 
@@ -289,7 +296,7 @@ if __name__ == '__main__' :
 
 		# Print the symbol table
 		print ("\033[93mSymbol Table\033[00m")
-		print ("Symbol\t Type\tAddress\tSize")
+		print ("Symbol\t   Type\t\tAddress\tSize")
 		for i in symbol_table:
 			print (i, "\t", " "*(8-len(symbol_table[i][0])),symbol_table[i][0], "\t", symbol_table[i][1],end=" ")
 			if symbol_table[i][0] == 'variable' : print (" \tword")
