@@ -111,6 +111,13 @@ def first_pass (data_lines) :
 						rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
 							"Label already defined as variable")
 
+					elif line[1] in opcode_translations :
+
+						flag = False
+
+						rprint ("Syntax Error in line " + str(line_counter) + " ---> " +
+								"label's name cannot be same as opcode")
+						
 					elif line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
 
