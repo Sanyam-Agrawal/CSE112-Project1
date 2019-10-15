@@ -4,7 +4,7 @@ import sys
 if __import__('os').name == "nt" : __import__('os').system('color')
 
 # Easy error reporting
-def rprint (statement) : print("\033[91m {}\033[00m" .format(statement))
+def rprint (statement) : print("\033[91m{}\033[00m" .format(statement))
 
 instruction_length = 12
 opcode_length      = 4
@@ -258,8 +258,13 @@ if __name__ == '__main__' :
 
 		print ("\033[92mProgram succesfully assembled. :)\033[00m")
 
-		#TODO: Print the symbol table
+		# Print the symbol table
+		print ("\033[93mSymbol Table\033[00m")
+		print ("Symbol\tType\tAddress\tSize")
+		for i in symbol_table:
+			print (i, "\t", symbol_table[i][0], "\t", symbol_table[i][1])
+			if i[0] == 'variable' : print (" \tword")
 
-		#Print the object code
+		# Print the object code
 		print ("\033[95mObject Code\033[00m")
 		for i in object_code: print(i)
