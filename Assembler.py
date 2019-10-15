@@ -103,10 +103,6 @@ def first_pass (data_lines) :
 						flag = False
 						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
 
-					elif line[1].isdigit() :
-						flag = False
-						print ("Syntax Error\nLabel can't be a numeric " + str (line_counter))
-
 					else :
 						if line[1] in labels_accessed :
 							labels_accessed[line[1]].append(line_counter)
@@ -129,7 +125,7 @@ def first_pass (data_lines) :
 							elif symbol_table[line[1]][0] == "label" :
 									flag = False
 									print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
-							
+
 			
 			else :
 				flag = False
