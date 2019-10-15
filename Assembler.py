@@ -146,7 +146,6 @@ def first_pass (data_lines) :
 
 
 	# Check : All labels accessed have been defined.
-	print(symbol_table)
 	for i in labels_accessed :
 
 		if i not in symbol_table :
