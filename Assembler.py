@@ -30,6 +30,7 @@ def first_pass (data_lines) :
 
 	labels_accessed = {}
 
+	Stp = False
 
 	for i in data_lines :
 
@@ -81,6 +82,8 @@ def first_pass (data_lines) :
 					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Too many arguments")
 
 			elif line[0] == "STP" :
+
+				Stp = True
 
 				if len(line) > 1 :
 					flag = False
@@ -144,6 +147,13 @@ def first_pass (data_lines) :
 	
 		line_counter += 1
 
+
+
+	if not Stp : 
+
+		flag = False
+
+		rprint ("Syntax Error ---> No stop command in the assembly code")
 
 	# Check : All labels accessed have been defined.
 	for i in labels_accessed :
