@@ -1,12 +1,10 @@
 import sys
-from termcolor import cprint 
 
 # Hack for Windows CLI
-if __import__('os').name == "nt" : __import__('os').system('color')
+#if __import__('os').name == "nt" : __import__('os').system('color')
 
 # Easy error reporting
-ebprint = lambda x : cprint (x, 'red', attrs=['bold'])
-eprint  = lambda x : cprint (x, 'red')
+def rprint (statement) : print("\033[91m {}\033[00m" .format(statement))
 
 instruction_length = 12
 opcode_length      = 4
@@ -44,15 +42,15 @@ def first_pass (data_lines) :
 				flag = False
 				
 				if symbol_table[line[0]][1] == "variable" :
-					eprint ("Syntax Error" + " ---> " + "Variable already defined with same name as a label.")
+					rprint ("Syntax Error" + " ---> " + "Variable already defined with same name as a label.")
 				
 				else :
-					eprint("Syntax Error" + " ---> " + "Label already defined in line " + str (line_counter))
+					rprint("Syntax Error" + " ---> " + "Label already defined in line " + str (line_counter))
 			
 			else :
 
 				if line[0][:-1] in opcode_translations :
-					ebprint ("Syntax Error" + " ---> " + "Label's name cannot be same as opcode "
+					rprint ("Syntax Error" + " ---> " + "Label's name cannot be same as opcode "
 						+ "in line " + str (line_counter))
 				
 				else :		
@@ -64,7 +62,7 @@ def first_pass (data_lines) :
 
 			flag = False
 
-			eprint ("Syntax Error" + " ---> " + "Empty line after label in line " + str (line_counter))
+			rprint ("Syntax Error" + " ---> " + "Empty line after label in line " + str (line_counter))
 				
 		elif line[0] in opcode_translations :
 
@@ -72,16 +70,16 @@ def first_pass (data_lines) :
 
 				if len(line) > 1 :
 					flag = False
-					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 
 			elif line[0] == "STP" :
 
 				if len(line) > 1 :
 					flag = False
-					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 				
 				elif len(data_lines) != line_counter :
-					eprint ("Warning, STP found before end of Program in line " + str (line_counter))
+					rprint ("Warning, STP found before end of Program in line " + str (line_counter))
 
 				break
 
@@ -89,11 +87,11 @@ def first_pass (data_lines) :
 
 				if len(line) == 1 :
 					flag = False
-					ebprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
+					rprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
 
 				elif len(line) > 2:
 					flag = False
-					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 
 				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
 
@@ -101,7 +99,7 @@ def first_pass (data_lines) :
 
 						flag = False
 
-						ebprint ("Syntax Error" + " ---> " + "Label already defined as variable " +
+						rprint ("Syntax Error" + " ---> " + "Label already defined as variable " +
 							 "in line " + str (line_counter))
 
 					elif line[1] in labels_accessed :
@@ -111,29 +109,30 @@ def first_pass (data_lines) :
 						labels_accessed[line[1]] = [line_counter]
 
 				else :
-					
+
 					if line[1] not in symbol_table and line[1] not in labels_accessed :
 
 						if line[1] in opcode_translations :
 
-							ebprint ("Syntax Error" + " ---> " + "variable's name cannot be same"
+							rprint ("Syntax Error" + " ---> " + "variable's name cannot be same"
 								 + " as opcode in line " + str(line_counter))
 
 						else :
 							symbol_table[line[1]] = ["variable"]
 
-					elif line[1] in symbol_table and symbol_table[line[1]][0] == "label" or line[1] in labels_accessed:
+					elif (line[1] in symbol_table and symbol_table[line[1]][0] == "label") or \
+							line[1] in labels_accessed:
 
 						flag = False
 
-						ebprint ("Syntax Error" + " ---> " + "Label already defined with the same name "
+						rprint ("Syntax Error" + " ---> " + "Label already defined with the same name "
 							 + "in line " + str (line_counter))
 
 		else :
 
 			flag = False
 
-			ebprint ("Syntax Error" + " ---> " + "Unknown Opcode in line " + str (line_counter))
+			rprint ("Syntax Error" + " ---> " + "Unknown Opcode in line " + str (line_counter))
 	
 		line_counter += 1
 
@@ -148,7 +147,7 @@ def first_pass (data_lines) :
 
 			line_numbers = " ".join(map(str,labels_accessed[i]))
 
-			ebprint ("Syntax Error" + " ---> " + "Label " + i +
+			rprint ("Syntax Error" + " ---> " + "Label " + i +
 				" is accessed but not in defined in the line(s):- " + line_numbers)
 
 
@@ -167,6 +166,27 @@ def first_pass (data_lines) :
 
 
 
+def second_pass (data_lines) :
+
+	object_code = []
+
+	for i in data_lines :
+
+		line = i
+
+		#Get rid of label
+		if line[0][-1] == ":" : line = line[1:]
+
+		if len(line) == 2 : address = bin(line[1])[2:]
+		else : address = bin(0)[2:]
+
+		address = '0'*(address_length-len(address)) + address
+
+		object_code.append( opcode_translations[line[0]] + address )
+
+	return object_code
+
+
 
 if __name__ == '__main__' :
 
@@ -179,7 +199,7 @@ if __name__ == '__main__' :
 
 	if len(sys.argv) > 2 :
 
-		ebprint ("Too many arguments, exiting")
+		rprint ("Too many arguments, exiting")
 
 		quit()
 
@@ -190,7 +210,7 @@ if __name__ == '__main__' :
 
 	except:
 
-		ebprint ("ERROR")
+		rprint ("ERROR")
 
 		print (
 			"File with the given name doesn't exist. \n "
@@ -201,7 +221,7 @@ if __name__ == '__main__' :
 			"4. The file given has strict file permissions, so we are restricted from reading it. "
 		)
 
-		eprint ("Exiting")
+		rprint ("Exiting")
 
 		quit()
 
@@ -212,9 +232,9 @@ if __name__ == '__main__' :
 
 	except:
 
-		ebprint ("ERROR")
+		rprint ("ERROR")
 		print ("Unable to read data, possibly file is corrupted.")
-		eprint ("Exiting")
+		rprint ("Exiting")
 
 		quit()
 
@@ -233,8 +253,12 @@ if __name__ == '__main__' :
 
 	if flag == True :
 
-		# second_pass (data_lines)
+		object_code = second_pass (data_lines)
 
-		cprint ("Program succesfully assembled. :)", 'green', attrs=['bold'])
+		print ("\033[92mProgram succesfully assembled. :)\033[00m")
 
 		#TODO: Print the symbol table
+
+		#Print the object code
+		print ("\033[95mObject Code\033[00m")
+		for i in object_code: print(i)
