@@ -50,8 +50,13 @@ def first_pass (data_lines) :
 					eprint("Syntax Error" + " ---> " + "Label already defined in line " + str (line_counter))
 			
 			else :
-			
-				symbol_table[line[0][:-1]] = ["label", line_counter]
+
+				if line[0][:-1] in opcode_translations :
+					ebprint ("Syntax Error" + " ---> " + "label's name cannot be same as opcode ")
+				
+				else :		
+					symbol_table[line[0][:-1]] = ["label", line_counter]
+				
 				line = line[1:]
 
 		if len(line) == 0 :
@@ -106,7 +111,9 @@ def first_pass (data_lines) :
 
 				else :
 
-					if line[1] not in symbol_table and line[1] not in labels_accessed:
+					if line[1] not in symbol_table and line[1] not in labels_accessed :
+						if line[1] in opcode_translations :
+							ebprint ("Syntax Error" + " ---> " + "variable's name cannot be same as opcode ")
 						symbol_table[line[1]] = ["variable"]
 
 					elif symbol_table[line[1]][0] == "label" :
