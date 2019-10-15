@@ -261,6 +261,12 @@ if __name__ == '__main__' :
 
 	# Split the code according to newline
 	data_lines = data.split("\n")
+
+	# Remove comments
+	for i in range(len(data_lines)) :
+		pos = data_lines[i].find("#")
+		if pos != -1: data_lines[i] = data_lines[i][:pos]
+
 	# Remove redundant whitespace
 	data_lines = [(" ".join(i.split())).split(" ") for i in data_lines]
 	# Remove blank lines
