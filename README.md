@@ -13,6 +13,7 @@
 3. Rest of the opcodes take exactly one argument.
 4. Variables and labels must not have same names as opcodes. [Reason: Opcodes are treated as keywords.]
 5. START and END directives, are not supported. [Reason: Not present in the project specifications.]
+6. Comments start with '#' and are treated as such till the end of the line.
 
 ## Working
 
@@ -32,6 +33,18 @@
   (i) Location counter is incremented.
   (j) Repeat steps (b) to (i) for all lines of code.
 
+4. If errors were encountered, execution stops.
+
+5. Second Pass
+  (a) Parse the line of code.
+  (b) Replace the opcode with its machine code equivalent.
+  (c) Replace the address of the variable/label (if absent, its taken as 0) with its binary representation.
+  (d) Repeat steps (a) to (c) for all lines of code.
+
+6. Symbol table is printed.
+
+7. Object code is printed.
+
 Note: Virtual address mapping starts from 1.
 Note: All variables are 'word'-size.
 Note: The value of the variables is never considered, just their addresses.
@@ -42,8 +55,7 @@ Note: The value of the variables is never considered, just their addresses.
 Errors are reported in red color on the terminal.
 
 They are the following:
-
-
+Absent STP, Wrong Syntax, Label not Defined, Wrong no of arguments and so on.
 
 Note: All line numbers reported are in after stripping blank lines from the data read from the file.
       Hence, kindly take that into account.
