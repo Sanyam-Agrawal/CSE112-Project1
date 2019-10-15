@@ -51,6 +51,9 @@ def first_pass (data_lines) :
 			else :
 
 				if line[0][:-1] in opcode_translations :
+
+					flag = False
+
 					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Label's name"
 						+ "cannot be same as opcode")
 				
@@ -114,6 +117,8 @@ def first_pass (data_lines) :
 					if line[1] not in symbol_table and line[1] not in labels_accessed :
 
 						if line[1] in opcode_translations :
+
+							flag = False
 
 							rprint ("Syntax Error in line " + str(line_counter) + " ---> " +
 								"variable's name cannot be same as opcode")
