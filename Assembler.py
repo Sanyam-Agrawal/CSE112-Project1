@@ -32,6 +32,7 @@ def first_pass (data_lines) :
 
 	labels_accessed = {}
 
+
 	for i in data_lines :
 
 		line = i
@@ -46,7 +47,7 @@ def first_pass (data_lines) :
 					eprint ("Syntax Error" + " ---> " + "Variable already defined with same name as a label.")
 				
 				else :
-					eprint("Syntax Error" + " ---> " + "Label is already defined in line " + str (line_counter))
+					eprint("Syntax Error" + " ---> " + "Label already defined in line " + str (line_counter))
 			
 			else :
 			
@@ -80,22 +81,26 @@ def first_pass (data_lines) :
 
 			else :
 
-				if len(line) > 2:
-					flag = False
-					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
-
-				elif len(line) == 1 :
+				if len(line) == 1 :
 					flag = False
 					ebprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
+
+				elif len(line) > 2:
+					flag = False
+					ebprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
 
 				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
 
 					if line[1] in symbol_table and symbol_table[line[1]][0] == "variable" :
-						flag=False
-						ebprint ("Syntax Error" + " ---> " + "Label already defined as variable " + str (line_counter))
+
+						flag = False
+
+						ebprint ("Syntax Error" + " ---> " + "Label already defined as variable " +
+							 "in line " + str (line_counter))
 
 					elif line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
+
 					else :
 						labels_accessed[line[1]] = [line_counter]
 
@@ -105,8 +110,11 @@ def first_pass (data_lines) :
 						symbol_table[line[1]] = ["variable"]
 
 					elif symbol_table[line[1]][0] == "label" :
-							flag = False
-							ebprint ("Syntax Error" + " ---> " + "Label already defined with the same name " + str (line_counter))
+
+						flag = False
+
+						ebprint ("Syntax Error" + " ---> " + "Label already defined with the same name "
+							 + "in line " + str (line_counter))
 
 		else :
 
@@ -115,6 +123,7 @@ def first_pass (data_lines) :
 			ebprint ("Syntax Error" + " ---> " + "Unknown Opcode in line " + str (line_counter))
 	
 		line_counter += 1
+
 
 	# Check : All labels accessed have been defined.
 
@@ -129,6 +138,9 @@ def first_pass (data_lines) :
 			ebprint ("Syntax Error" + " ---> " + "Label " + i +
 				" is accessed but not in defined in the line(s):- " + line_numbers)
 
+
+	# Assign memory addresses to variables.
+
 	for i in symbol_table : 
 
 		if symbol_table[i][0] == "variable" :
@@ -136,6 +148,7 @@ def first_pass (data_lines) :
 			symbol_table[i].append(line_counter)
 
 			line_counter+=1
+
 
 	return flag
 
