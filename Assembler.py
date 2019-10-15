@@ -32,110 +32,97 @@ def first_pass (data_lines) :
 
 	for i in data_lines :
 
-		# To remove reduntant whitespace
-		line_of_data = (" ".join(i.split())).split(" ")
+		line = i
 
-		# To handle empty instruction correctly
-		if i == "" : line_of_data = []
+		if line[0][-1] == ':' :
 
-		if len(line_of_data) != 0 :
+			if line[0] in symbol_table :
 
-			line = line_of_data[:]
-
-			if line[0][-1] == ':' :
-
-				if line[0] in symbol_table :
-
-					flag = False
-					
-					if symbol_table[line[0]][1] == "variable" :
-						print ("Syntax Error\nVariable already defined with same name as a label.")
-					
-					else :
-						print("Syntax Error\nLabel is already defined in line " + str (line_counter))
+				flag = False
+				
+				if symbol_table[line[0]][1] == "variable" :
+					print ("Syntax Error\nVariable already defined with same name as a label.")
 				
 				else :
+					print("Syntax Error\nLabel is already defined in line " + str (line_counter))
+			
+			else :
+			
+				symbol_table[line[0][:-1]] = ["label", line_counter]
+				line = line[1:]
+
+		if line[0] in opcode_translations :
+
+			if line[0] == "CLA" :
+
+				if len(line) > 1 :
+					flag = False
+					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+
+			elif line[0] == "STP" :
+
+				if len(line) > 1 :
+					flag = False
+					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
 				
-					symbol_table[line[0][:-1]] = ["label", line_counter]
-					line = line[1:]
+				elif len(data_lines) != line_counter :
+					print ("Warning, STP found before end of Program in line " + str (line_counter))
+			
+			elif line[0] == "INP" :
 
-			if line[0] in opcode_translations :
+				if len(line) > 2 :
+					flag = False
+					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
 
-				if line[0] == "CLA" :
+				elif len(line) == 1 : 
+					flag = False
+					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
 
-					if len(line) > 1 :
-						flag = False
-						print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+				else :
+					if line[1] not in symbol_table:
+						symbol_table[line[1]] = ["variable",line_counter]
+					elif symbol_table[line[1]][0] == "label" :
+							flag = False
+							print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
 
-				elif line[0] == "STP" :
+			elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
 
-					if len(line) > 1 :
-						flag = False
-						print ("Syntax Error\nToo many arguments in line " + str (line_counter))
-					
-					elif len(data_lines) != line_counter :
-						print ("Warning, STP found before end of Program in line " + str (line_counter))
-				
-				elif line[0] == "INP" :
+				if len(line) > 2:
+					flag = False
+					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
 
-					if len(line) > 2 :
-						flag = False
-						print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+				elif len(line) == 1 : 
+					flag = False
+					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
 
-					elif len(line) == 1 : 
-						flag = False
-						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
-
+				else :
+					if line[1] in labels_accessed :
+						labels_accessed[line[1]].append(line_counter)
 					else :
+						labels_accessed[line[1]] = [line_counter]
+
+			else:
+
+				if len(line) > 2 :
+					flag = False
+					print ("Syntax Error\nToo many arguments in line " + str (line_counter))
+
+				elif len(line) == 1 :
+					flag = False
+					print ("Syntax Error\nToo few arguments in line " + str (line_counter))
+
+				else :
 						if line[1] not in symbol_table:
 							symbol_table[line[1]] = ["variable",line_counter]
 						elif symbol_table[line[1]][0] == "label" :
 								flag = False
 								print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
 
-				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
-
-					if len(line) > 2:
-						flag = False
-						print ("Syntax Error\nToo many arguments in line " + str (line_counter))
-
-					elif len(line) == 1 : 
-						flag = False
-						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
-
-					else :
-						if line[1] in labels_accessed :
-							labels_accessed[line[1]].append(line_counter)
-						else :
-							labels_accessed[line[1]] = [line_counter]
-
-				else:
-
-					if len(line) > 2 :
-						flag = False
-						print ("Syntax Error\nToo many arguments in line " + str (line_counter))
-
-					elif len(line) == 1 :
-						flag = False
-						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
-
-					else :
-							if line[1] not in symbol_table:
-								symbol_table[line[1]] = ["variable",line_counter]
-							elif symbol_table[line[1]][0] == "label" :
-									flag = False
-									print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
-
-			
-			else :
-				flag = False
-				ebprint ("Syntax Error\nUnknown Opcode in line " + str (line_counter))
 		
 		else :
-
-			#TODO: Think deeply about the designed handling of blank lines
-			ebprint ("Syntax Error\nEmpty line")
-		
+			flag = False
+			ebprint ("Syntax Error\nUnknown Opcode in line " + str (line_counter))
+	
 		line_counter += 1
 
 
@@ -214,8 +201,12 @@ if __name__ == '__main__' :
 	_file.close()
 
 
+	# Split the code according to newline
 	data_lines = data.split("\n")
-	if data_lines[-1] == "" : data_lines = data_lines[:-1] # handling last line being empty
+	# Remove redundant whitespace
+	data_lines = [(" ".join(i.split())).split(" ") for i in data_lines]
+	# Remove blank lines
+	data_lines = [i for i in data_lines if i!=""]
 
 	flag = first_pass  (data_lines)
 
