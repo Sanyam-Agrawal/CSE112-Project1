@@ -1,20 +1,20 @@
-#Assembler Documentation
+# Assembler Documentation
 
-##Usage Instructions
+## Usage Instructions
 `python3 Assembler.py <name_of_assembly_file>`
 
-##Syntax
+## Syntax
 
 ![alt text](./Opcodes.png "Opcodes")
 
-##A Few Considerations
+## A Few Considerations
 1. A label must immediately be followed by a colon ':'. A line cannot be blank after a label.
 2. CLA and STP don't take any arguments.
 3. Rest of the opcodes take exactly one argument.
 4. Variables and labels must not have same names as opcodes. [Reason: Opcodes are treated as keywords.]
 5. START and END directives, are not supported. [Reason: Not present in the project specifications.]
 
-##Working
+## Working
 
 1. Assembly code is read from specified file.
 
@@ -37,7 +37,7 @@ Note: All variables are 'word'-size.
 Note: The value of the variables is never considered, just their addresses.
 
 
-##Error Reporting
+## Error Reporting
 
 Errors are reported in red color on the terminal.
 
