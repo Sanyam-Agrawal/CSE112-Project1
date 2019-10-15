@@ -86,7 +86,7 @@ def first_pass (data_lines) :
 						flag = False
 						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
 
-					elif not line[1].isdigit() :
+					else :
 						if line[1] not in symbol_table:
 							symbol_table[line[1]] = ["variable",line_counter]
 						elif symbol_table[line[1]][0] == "label" :
@@ -123,10 +123,13 @@ def first_pass (data_lines) :
 						flag = False
 						print ("Syntax Error\nToo few arguments in line " + str (line_counter))
 
-					elif not line[1].isdigit() :
-						flag = False
-						if line[1] not in symbol_table :
-							print ("Syntax Error\nVariable not defined in line " + str (line_counter))
+					else :
+							if line[1] not in symbol_table:
+								symbol_table[line[1]] = ["variable",line_counter]
+							elif symbol_table[line[1]][0] == "label" :
+									flag = False
+									print ("Syntax Error\nLabel already defined with the same name " + str (line_counter))
+							
 			
 			else :
 				flag = False
@@ -219,7 +222,7 @@ if __name__ == '__main__' :
 	if data_lines[-1] == "" : data_lines = data_lines[:-1] # handling last line being empty
 
 	flag = first_pass  (data_lines)
-	
+
 	if flag == True :
 
 		# second_pass (data_lines)
