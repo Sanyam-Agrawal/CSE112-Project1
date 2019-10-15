@@ -111,7 +111,7 @@ def first_pass (data_lines) :
 						labels_accessed[line[1]] = [line_counter]
 
 				else :
-
+					
 					if line[1] not in symbol_table and line[1] not in labels_accessed :
 
 						if line[1] in opcode_translations :
@@ -122,7 +122,7 @@ def first_pass (data_lines) :
 						else :
 							symbol_table[line[1]] = ["variable"]
 
-					elif symbol_table[line[1]][0] == "label" :
+					elif line[1] in symbol_table and symbol_table[line[1]][0] == "label" or line[1] in labels_accessed:
 
 						flag = False
 
