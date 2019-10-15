@@ -1,7 +1,7 @@
 import sys
 
 # Hack for Windows CLI
-#if __import__('os').name == "nt" : __import__('os').system('color')
+if __import__('os').name == "nt" : __import__('os').system('color')
 
 # Easy error reporting
 def rprint (statement) : print("\033[91m {}\033[00m" .format(statement))
@@ -42,16 +42,17 @@ def first_pass (data_lines) :
 				flag = False
 				
 				if symbol_table[line[0]][1] == "variable" :
-					rprint ("Syntax Error" + " ---> " + "Variable already defined with same name as a label.")
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
+						"Variable already defined with same name as a label.")
 				
 				else :
-					rprint("Syntax Error" + " ---> " + "Label already defined in line " + str (line_counter))
+					rprint("Syntax Error in line " + str (line_counter) + " ---> " + "Label already defined )
 			
 			else :
 
 				if line[0][:-1] in opcode_translations :
-					rprint ("Syntax Error" + " ---> " + "Label's name cannot be same as opcode "
-						+ "in line " + str (line_counter))
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Label's name"
+						+ "cannot be same as opcode ")
 				
 				else :		
 					symbol_table[line[0][:-1]] = ["label", line_counter]
@@ -62,7 +63,7 @@ def first_pass (data_lines) :
 
 			flag = False
 
-			rprint ("Syntax Error" + " ---> " + "Empty line after label in line " + str (line_counter))
+			rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Empty line after label")
 				
 		elif line[0] in opcode_translations :
 
@@ -70,13 +71,13 @@ def first_pass (data_lines) :
 
 				if len(line) > 1 :
 					flag = False
-					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Too many arguments")
 
 			elif line[0] == "STP" :
 
 				if len(line) > 1 :
 					flag = False
-					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Too many arguments")
 				
 				elif len(data_lines) != line_counter :
 					rprint ("Warning, STP found before end of Program in line " + str (line_counter))
@@ -87,11 +88,11 @@ def first_pass (data_lines) :
 
 				if len(line) == 1 :
 					flag = False
-					rprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Too few arguments")
 
 				elif len(line) > 2:
 					flag = False
-					rprint ("Syntax Error" + " ---> " + "Too many arguments in line " + str (line_counter))
+					rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Too many arguments")
 
 				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
 
@@ -99,8 +100,8 @@ def first_pass (data_lines) :
 
 						flag = False
 
-						rprint ("Syntax Error" + " ---> " + "Label already defined as variable " +
-							 "in line " + str (line_counter))
+						rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
+							"Label already defined as variable ")
 
 					elif line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
@@ -114,8 +115,8 @@ def first_pass (data_lines) :
 
 						if line[1] in opcode_translations :
 
-							rprint ("Syntax Error" + " ---> " + "variable's name cannot be same"
-								 + " as opcode in line " + str(line_counter))
+							rprint ("Syntax Error in line " + str(line_counter) + " ---> " +
+								"variable's name cannot be same as opcode")
 
 						else :
 							symbol_table[line[1]] = ["variable"]
@@ -125,14 +126,14 @@ def first_pass (data_lines) :
 
 						flag = False
 
-						rprint ("Syntax Error" + " ---> " + "Label already defined with the same name "
-							 + "in line " + str (line_counter))
+						rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
+							"Label already defined with the same name ")
 
 		else :
 
 			flag = False
 
-			rprint ("Syntax Error" + " ---> " + "Unknown Opcode in line " + str (line_counter))
+			rprint ("Syntax Error in line " + str (line_counter) + " ---> " + "Unknown Opcode")
 	
 		line_counter += 1
 
@@ -177,7 +178,7 @@ def second_pass (data_lines) :
 		#Get rid of label
 		if line[0][-1] == ":" : line = line[1:]
 
-		if len(line) == 2 : address = bin(line[1])[2:]
+		if len(line) == 2 : address = bin( symbol_table[line[1]][1] )[2:]
 		else : address = bin(0)[2:]
 
 		address = '0'*(address_length-len(address)) + address
