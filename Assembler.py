@@ -35,6 +35,8 @@ def first_pass (data_lines) :
 
 		line = i[:]
 
+		if line[0][-1] == ':' :
+
 			line[0] = line[0][:-1]
 
 			if line[0] in symbol_table :
@@ -60,7 +62,7 @@ def first_pass (data_lines) :
 						+ "cannot be same as opcode")
 				
 				else :		
-					symbol_table[line[0][:-1]] = ["label", line_counter]
+					symbol_table[line[0]] = ["label", line_counter]
 				
 				line = line[1:]
 
@@ -86,8 +88,6 @@ def first_pass (data_lines) :
 				
 				elif len(data_lines) != line_counter :
 					rprint ("Warning, STP found before end of Program in line " + str (line_counter))
-
-				break
 
 			else :
 
@@ -146,7 +146,7 @@ def first_pass (data_lines) :
 
 
 	# Check : All labels accessed have been defined.
-
+	print(symbol_table)
 	for i in labels_accessed :
 
 		if i not in symbol_table :
