@@ -206,7 +206,7 @@ if __name__ == '__main__' :
 	# Remove redundant whitespace
 	data_lines = [(" ".join(i.split())).split(" ") for i in data_lines]
 	# Remove blank lines
-	data_lines = [i for i in data_lines if i!=""]
+	data_lines = [i for i in data_lines if i!=[""]]
 
 	flag = first_pass  (data_lines)
 
