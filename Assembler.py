@@ -35,8 +35,6 @@ def first_pass (data_lines) :
 
 		line = i[:]
 
-		if line[0][-1] == ':' :
-
 			line[0] = line[0][:-1]
 
 			if line[0] in symbol_table :
