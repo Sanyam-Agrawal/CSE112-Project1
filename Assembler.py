@@ -89,16 +89,20 @@ def first_pass (data_lines) :
 					ebprint ("Syntax Error" + " ---> " + "Too few arguments in line " + str (line_counter))
 
 				elif line[0] == "BRP" or line[0] == "BRN" or line[0] == "BRZ" :
-					#TODO : What if it was a variable?
-					if line[1] in labels_accessed :
+
+					if line[1] in symbol_table and symbol_table[line[1]][0] == "variable" :
+						flag=False
+						ebprint ("Syntax Error" + " ---> " + "Label already defined as variable " + str (line_counter))
+
+					elif line[1] in labels_accessed :
 						labels_accessed[line[1]].append(line_counter)
 					else :
 						labels_accessed[line[1]] = [line_counter]
 
 				else :
 
-					if line[1] not in symbol_table:
-						symbol_table[line[1]] = ["variable", line_counter]
+					if line[1] not in symbol_table and line[1] not in labels_accessed:
+						symbol_table[line[1]] = ["variable"]
 
 					elif symbol_table[line[1]][0] == "label" :
 							flag = False
@@ -112,22 +116,26 @@ def first_pass (data_lines) :
 	
 		line_counter += 1
 
+	# Check : All labels accessed have been defined.
 
-	# check for all labels accessed are defined or not
 	for i in labels_accessed :
 
 		if i not in symbol_table :
 
-			line_numbers=""
+			flag = False
 
-			for j in labels_accessed[i] :
+			line_numbers = " ".join(map(str,labels_accessed[i]))
 
-				line_numbers += str(j)+" "
+			ebprint ("Syntax Error" + " ---> " + "Label " + i +
+				" is accessed but not in defined in the line(s):- " + line_numbers)
 
-			error_line="Label "+i+" is accessed but not in defined in the line(s):- "+line_numbers
+	for i in symbol_table : 
 
-			ebprint (error_line)
+		if symbol_table[i][0] == "variable" :
 
+			symbol_table[i].append(line_counter)
+
+			line_counter+=1
 
 	return flag
 
