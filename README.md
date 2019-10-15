@@ -22,6 +22,7 @@
 2. All empty lines are stripped.
 
 3. First Pass
+
   (a) Location counter is initialised.
   (b) Line of code is parsed.
   (c) If a label is present, it is added into the symbol table or error is reported accordingly.
@@ -36,6 +37,7 @@
 4. If errors were encountered, execution stops.
 
 5. Second Pass
+
   (a) Parse the line of code.
   (b) Replace the opcode with its machine code equivalent.
   (c) Replace the address of the variable/label (if absent, its taken as 0) with its binary representation.
@@ -46,8 +48,11 @@
 7. Object code is printed.
 
 Note: Virtual address mapping starts from 1.
+
 Note: All variables are 'word'-size.
+
 Note: The value of the variables is never considered, just their addresses.
+
 
 
 ## Error Reporting
