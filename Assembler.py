@@ -44,7 +44,7 @@ def first_pass (data_lines) :
 
 				flag = False
 				
-				if symbol_table[line[0]][1] == "variable" :
+				if symbol_table[line[0]][0] == "variable" :
 					rprint ("Syntax Error in line " + str (line_counter) + " ---> " +
 						"Variable already defined with same name as a label.")
 				
